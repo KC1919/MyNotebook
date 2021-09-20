@@ -92,7 +92,7 @@ authRouter.post(
 //User Login
 authRouter.post(
   "/login",
-  [body("email", "Enter a valid email!").isEmail(),
+  [body("email", "Enter a valid email!").isEmail(), //verifying the details entered by the user
     body("password", "Password cannot be blank").exists()
   ],
   async (req, res) => {
@@ -135,7 +135,7 @@ authRouter.post(
           //time of login, if matched the user is given the access else the user is denied access
           return res.status(200).json({
             message: "User successfully logged in",
-            result: user,
+
           });
         } else {
           //if the passwod does not matches, the we return the response with an error
@@ -155,9 +155,34 @@ authRouter.post(
 );
 
 
+//route to getUser
+authRouter.get("/getUser", verify, getUser);
+
 //Function to test the token authentication
-authRouter.get("/protected", verify, (req, res) => { //verify is the middleware
-  console.log("You reached protected");
-});
+async function getUser(req, res) {
+
+  try {
+    // console.log(req.userId);
+    const user = await User.findById(req.userId).select("-password");
+    // console.log(user);
+    if (user!==null) { //if user was fetched successfully
+      return res.status(200).json({
+        message: "Use fetched successfully"
+      });
+    } else {
+      return res.status(400).json({
+        message: "User not found"
+      });
+    }
+
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error
+    });
+  }
+
+}
+
 
 module.exports = authRouter;
