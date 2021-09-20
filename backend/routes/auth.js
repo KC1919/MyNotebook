@@ -6,7 +6,11 @@ const {
 } = require("express-validator");
 const bcrypt = require("bcryptjs");
 
+const jwt = require("jsonwebtoken");
+
 const authRouter = express.Router();
+
+const verify = require("../middlewares/verify");
 
 //User Registration
 authRouter.post(
@@ -31,7 +35,7 @@ authRouter.post(
       console.log("failed");
 
       return res.status(404).json({
-        message: "incomplete details, all fields required!",
+        message: "Incomplete details, all fields required!",
       });
     } else {
       try {
@@ -83,10 +87,14 @@ authRouter.post(
   }
 );
 
+
+
 //User Login
 authRouter.post(
   "/login",
-  [body("email", "Enter a valid email!").isEmail()],
+  [body("email", "Enter a valid email!").isEmail(),
+    body("password", "Password cannot be blank").exists()
+  ],
   async (req, res) => {
     const errors = validationResult(req); //validation
 
@@ -107,13 +115,24 @@ authRouter.post(
         //if user is not present in the database with the inputted email, the we return with error response
         if (!user) {
           return res.status(400).json({
-            message: "Authentication failed, invalid email!",
+            message: "Authentication failed, invalid user credentials!",
           });
         }
 
         //else if the user is present in the database with the inputted email, we check the password
-        const result=await bcrypt.compare(req.body.password,user.password);
-        if(result){
+        const result = await bcrypt.compare(req.body.password, user.password);
+        if (result) { //if the password is matched
+          //then we generate a json-web-token
+          const token = jwt.sign({
+            userId: user._id
+          }, process.env.JWT_KEY);
+
+          //store that token inside a cookie
+          res.cookie("secret", token, { //and then send the cookie with the response tot he user
+            httpOnly: true
+          }); //so whenever the user will make a reques to authorized content, he will send a token
+          //along with his request, which will be matched with the token givrn to the user at the
+          //time of login, if matched the user is given the access else the user is denied access
           return res.status(200).json({
             message: "User successfully logged in",
             result: user,
@@ -121,18 +140,24 @@ authRouter.post(
         } else {
           //if the passwod does not matches, the we return the response with an error
           return res.status(400).json({
-            message: "User authentication failed, Invalid Password!",
+            message: "User authentication failed, Invalid login credentials!",
           });
         }
       } catch (error) {
         console.log("Error in login", error);
         return res.status(400).json({
-          message: "Error occured in login",
+          message: "Error occurred in login",
           result: error,
         });
       }
     }
   }
 );
+
+
+//Function to test the token authentication
+authRouter.get("/protected", verify, (req, res) => { //verify is the middleware
+  console.log("You reached protected");
+});
 
 module.exports = authRouter;
