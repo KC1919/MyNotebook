@@ -1,6 +1,6 @@
 const mongoose=require("mongoose");
 
-const dbURL="mongodb://localhost:27017/FoodDb";
+const dbURL="mongodb://localhost:27017/NotebookDB";
 
 const connectToMongoDb=async ()=>{
     await mongoose.connect(dbURL,()=>{
