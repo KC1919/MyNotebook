@@ -54,7 +54,7 @@ authRouter.post(
         //else we create the user, if the email is not already taken by some other user
         //Hash the password entered by the user.
         bcrypt.genSalt(10, async function (err, salt) {
-          await bcrypt.hash(
+          bcrypt.hash(
             req.body.password,
             salt,
             async function (err, hash) {
@@ -65,7 +65,8 @@ authRouter.post(
                 password: hash,
               }); //creating the user in the database
 
-              console.log(result);
+              console.log("User registered successfully");
+
 
               return res.status(200).json({
                 message: "registration successful",
@@ -115,23 +116,23 @@ authRouter.post(
         //if user is not present in the database with the inputted email, the we return with error response
         if (!user) {
           return res.status(400).json({
-            message: "Authentication failed, invalid user credentials!",
+            message: "Authentication failed, invalid login credentials!",
           });
         }
 
         //else if the user is present in the database with the inputted email, we check the password
         const result = await bcrypt.compare(req.body.password, user.password);
-        if (result) { //if the password is matched
+        if (result!==null) { //if the password is matched
           //then we generate a json-web-token
           const token = jwt.sign({
             userId: user._id
           }, process.env.JWT_KEY);
 
           //store that token inside a cookie
-          res.cookie("secret", token, { //and then send the cookie with the response tot he user
+          res.cookie("secret", token, { //and then send the cookie with the response to the user
             httpOnly: true
-          }); //so whenever the user will make a reques to authorized content, he will send a token
-          //along with his request, which will be matched with the token givrn to the user at the
+          }); //so whenever the user will make a request to authorized content, he will send a token
+          //along with his request, which will be matched with the token given to the user at the
           //time of login, if matched the user is given the access else the user is denied access
           return res.status(200).json({
             message: "User successfully logged in",
@@ -167,7 +168,7 @@ async function getUser(req, res) {
     // console.log(user);
     if (user!==null) { //if user was fetched successfully
       return res.status(200).json({
-        message: "Use fetched successfully"
+        message: "Use fetched successfully",user:user
       });
     } else {
       return res.status(400).json({
