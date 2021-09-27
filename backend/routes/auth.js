@@ -124,6 +124,7 @@ authRouter.post(
         const result = await bcrypt.compare(req.body.password, user.password);
         if (result!==null) { //if the password is matched
           //then we generate a json-web-token
+
           const token = jwt.sign({
             userId: user._id
           }, process.env.JWT_KEY);

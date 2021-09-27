@@ -16,6 +16,6 @@ connectToMongoDb();
 app.use("/api/auth",require("./routes/auth"));
 app.use("/api/notes",require("./routes/notes"));
 
-app.listen(3000, () => {
+app.listen(process.env.port || 5000, () => {
   console.log("server started on port 3000");
 });
