@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import NoteContext from "./NoteContext";
 
 const NoteState = (props) => {
-  const initialNotes = [
+  let initialNotes = [
     {
       _id: "61498114ea2aaf271e1b692p",
       user: "61480f605932661f7b47c3ba",
-      title: "Testing",
+      title: "Test1",
       description:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
       tag: "personal",
@@ -16,7 +16,7 @@ const NoteState = (props) => {
     {
       _id: "6149830c3fe9929867fbcab3",
       user: "61480f605932661f7b47c3ba",
-      title: "Test",
+      title: "Test2",
       description:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
       tag: "personal",
@@ -26,7 +26,7 @@ const NoteState = (props) => {
     {
       _id: "61498114ea2aaf271e1b692n",
       user: "61480f605932661f7b47c3ba",
-      title: "Testing",
+      title: "Test3",
       description:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
       tag: "personal",
@@ -36,7 +36,7 @@ const NoteState = (props) => {
     {
       _id: "61498114ea2aaf271e1b692m",
       user: "61480f605932661f7b47c3ba",
-      title: "Testing",
+      title: "Test4",
       description:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
       tag: "personal",
@@ -46,7 +46,7 @@ const NoteState = (props) => {
     {
       _id: "61498114ea2aaf271e1b692l",
       user: "61480f605932661f7b47c3ba",
-      title: "Testing",
+      title: "Test5",
       description:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
       tag: "personal",
@@ -56,7 +56,7 @@ const NoteState = (props) => {
     {
       _id: "61498114ea2aaf271e1b692f",
       user: "61480f605932661f7b47c3ba",
-      title: "Testing",
+      title: "Test6",
       description:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
       tag: "personal",
@@ -68,7 +68,14 @@ const NoteState = (props) => {
   //initializing the state with default state
   const [notes, addnote] = useState(initialNotes);
 
-  const deleteNote = (id) => {};
+  const deleteNote = (id) => {
+    console.log(id);
+    
+    const updatedNotes=notes.filter(note=>{
+      return note._id!==id
+    });
+    addnote(updatedNotes);
+  }
 
   const editNote = (id) => {};
 
