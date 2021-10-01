@@ -1,6 +1,10 @@
 const express = require("express");
 const app = express();
 
+var cors = require('cors')
+ 
+app.use(cors())
+
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
@@ -17,5 +21,5 @@ app.use("/api/auth",require("./routes/auth"));
 app.use("/api/notes",require("./routes/notes"));
 
 app.listen(process.env.port || 5000, () => {
-  console.log("server started on port 3000");
+  console.log("server started on port 5000");
 });

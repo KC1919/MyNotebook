@@ -10,7 +10,7 @@ const {
 const notesRouter = express.Router();
 
 //Route 1: To add a new note
-notesRouter.post("/addNote", verify, [
+notesRouter.post("/addNote", [
     //validating the details in the middleware
     body("title", "title cannot be left blank").isLength({
         min: 5
@@ -58,11 +58,11 @@ notesRouter.post("/addNote", verify, [
 
 
 //Route 2: To fetch all the notes of a logged in user
-notesRouter.get("/fetchNotes", verify, async (req, res) => {
+notesRouter.get("/fetchNotes", async (req, res) => {
     try {
         //findding the note with the user id in the database
         const result = await Note.find({
-            user: req.userId
+            // user: "61480f605932661f7b47c3ba"
         });
 
         // console.log(result);
@@ -89,7 +89,7 @@ notesRouter.get("/fetchNotes", verify, async (req, res) => {
 
 
 //Route 3: To update a note
-notesRouter.put("/updateNote/:id", verify, async (req, res) => {
+notesRouter.put("/update/:id", async (req, res) => {
 
     try {
         //extracting the note details to be updated
@@ -118,22 +118,30 @@ notesRouter.put("/updateNote/:id", verify, async (req, res) => {
             if (description) newNote.description = description;
             if (tag) newNote.tag = tag;
 
+            console.log(title);
+            console.log(description);
+            console.log(tag);
+
             //verify the user who is trying to update, whether he/she is the actual owner
-            if (note.user.toString() === req.userId) {
+            // if (note.user.toString() === req.userId) {
                 //if verified, finding the note by id and updating it with the new details
-                user = await Note.findByIdAndUpdate(req.params.id, {
+                updatedNote = await Note.findByIdAndUpdate(req.params.id, {
                     $set: newNote
                 }, {
                     new: true
                 });
+                if(updatedNote){
+                    console.log(updatedNote);
+                console.log("Note updated");
                 return res.status(200).json({
                     message: "Note updated successfully"
                 });
-            } else {
+            }
+            // } else {
                 return res.status(401).json({
                     message: "Cannot update, unauthorized!"
                 });
-            }
+            // }
         }
 
     } catch (error) {
@@ -145,7 +153,7 @@ notesRouter.put("/updateNote/:id", verify, async (req, res) => {
 });
 
 //Route 4: To delete a note
-notesRouter.delete("/delete/:id", verify, async (req, res) => {
+notesRouter.delete("/delete/:id", async (req, res) => {
     try {
         const id = req.params.id; //extracting the note id to be deleted
 
@@ -160,14 +168,14 @@ notesRouter.delete("/delete/:id", verify, async (req, res) => {
         //if the note is found
         else {
             //verify the user trying to deleted is the actural owner of the note
-            if (note.user.toString() === req.userId) { //if verified
+            // if (note.user.toString() === req.userId) { //if verified
                 const deleted = await Note.findByIdAndDelete(id); //deleting the note by the  id
                 return res.status(200).json({
                     message: "Note deleted successfully"
                 });
-            }else{
+            // }else{
                 return res.status(401).json({message:"Unauthorized access"});
-            }
+            // }
         }
     } catch (error) {
         res.status(500).json({
