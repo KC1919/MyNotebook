@@ -3,7 +3,7 @@ import NoteContext from "../context/NoteContext";
 
 export const AddNote = () => {
   const context = useContext(NoteContext);
-  const { notes, addNote } = context;
+  const {addNote } = context;
 
   const [note, setNote] = useState({
     title: "",
@@ -48,6 +48,20 @@ export const AddNote = () => {
             className="form-control"
             id="description"
             name="description"
+            onChange={onChange}
+          />
+        </div>
+
+        <div className="mb-3">
+          <label htmlFor="title" className="form-label">
+            Tag
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            id="tag"
+            name="tag"
+            aria-describedby="emailHelp"
             onChange={onChange}
           />
         </div>

@@ -2,10 +2,10 @@ import React, { useContext } from "react";
 import NoteContext from "../context/NoteContext";
 
 export default function NoteItem(props) {
-  const { note } = props;
+  const { note, updateNote } = props;
 
   const context = useContext(NoteContext);
-  const { deleteNote } = context;
+  const { deleteNote} = context;
 
   return (
     <div className="col-md-3">
@@ -20,7 +20,9 @@ export default function NoteItem(props) {
                 deleteNote(note._id);
               }}
             ></i>
-            <i className="far fa-edit mx-2"></i>
+            <i className="far fa-edit mx-2" onClick={(e)=>{
+              updateNote(note);
+            }}></i>
           </div>
         </div>
       </div>

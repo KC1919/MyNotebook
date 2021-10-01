@@ -4,91 +4,128 @@ import NoteContext from "./NoteContext";
 const NoteState = (props) => {
   let initialNotes = [
     {
-      _id: "61498114ea2aaf271e1b692p",
-      user: "61480f605932661f7b47c3ba",
-      title: "Test1",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      tag: "personal",
-      date: "2021-09-21T06:52:04.801Z",
-      __v: 0,
-    },
-    {
-      _id: "6149830c3fe9929867fbcab3",
-      user: "61480f605932661f7b47c3ba",
-      title: "Test2",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      tag: "personal",
-      date: "2021-09-21T07:00:28.435Z",
-      __v: 0,
-    },
-    {
-      _id: "61498114ea2aaf271e1b692n",
-      user: "61480f605932661f7b47c3ba",
-      title: "Test3",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      tag: "personal",
-      date: "2021-09-21T06:52:04.801Z",
-      __v: 0,
-    },
-    {
-      _id: "61498114ea2aaf271e1b692m",
-      user: "61480f605932661f7b47c3ba",
-      title: "Test4",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      tag: "personal",
-      date: "2021-09-21T06:52:04.801Z",
-      __v: 0,
-    },
-    {
-      _id: "61498114ea2aaf271e1b692l",
-      user: "61480f605932661f7b47c3ba",
-      title: "Test5",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      tag: "personal",
-      date: "2021-09-21T06:52:04.801Z",
-      __v: 0,
-    },
-    {
       _id: "61498114ea2aaf271e1b692f",
       user: "61480f605932661f7b47c3ba",
-      title: "Test6",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      title: "Testing",
+      description: "This is my first note!",
       tag: "personal",
-      date: "2021-09-21T06:52:04.801Z",
+      date: {
+        $date: "2021-09-21T06:52:04.801Z",
+      },
       __v: 0,
     },
   ];
 
+  const host = "http://localhost:5000";
+
   //initializing the state with default state
   const [notes, addnote] = useState(initialNotes);
 
-  const deleteNote = (id) => {
-    console.log(id);
-    
-    const updatedNotes=notes.filter(note=>{
-      return note._id!==id
-    });
-    addnote(updatedNotes);
-  }
-
-  const editNote = (id) => {};
-
-  const addNote = (note) => {
-    const { title, description } = note;
+  //function to add a new note
+  const addNote = async (note) => {
+    const { title, description, tag } = note;
     const newNote = {
       _id: "61498114ea2aaf271e1b692k",
       user: "61480f605932661f7b47c3ba",
       title: title,
       description: description,
-      tag: "",
+      tag: tag,
     };
+
+    try {
+      const url = `${host}/api/notes/addNote`;
+      const response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(newNote),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const json = await response.json();
+      console.log(json);
+    } catch (error) {
+      console.log(error.message);
+    }
     addnote(notes.concat(newNote));
+  };
+
+  //Fetching all notes from the database
+  const getNotes = async () => {
+    const url = `${host}/api/notes/fetchNotes`;
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const json = await response.json();
+      // console.log(json.result);
+      addnote(json.result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  //function to delete a aprticular note by its id
+  const deleteNote = async (id) => {
+    console.log(id);
+
+    try {
+      const url = `${host}/api/notes/delete/${id}`;
+      const response = await fetch(url, {
+        method: "DELETE",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const json = await response.json();
+      console.log(json);
+    } catch (error) {
+      console.log(error.message);
+    }
+
+    const updatedNotes = notes.filter((note) => {
+      return note._id !== id;
+    });
+    addnote(updatedNotes);
+  };
+
+  //function to edit a aprticular note by its id
+  const editNote = async (note) => {
+    try {
+      const url = `${host}/api/notes/update/${note.id}`;
+      const response = await fetch(url, {
+        method: "PUT",
+        mode: "cors",
+        body: JSON.stringify(note),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      await response.json();
+
+      const notesCopy = JSON.parse(JSON.stringify(notes));
+
+      //loop to find and update the note at the front end
+      for (let i = 0; i < notesCopy.length; i++) {
+        if (notesCopy[i]._id === note.id) {
+          notesCopy[i].title = note.title;
+          notesCopy[i].description = note.description;
+          notesCopy[i].tag = note.tag;
+          break;
+        }
+      }
+      // const json = await response.json();
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   return (
@@ -99,6 +136,7 @@ const NoteState = (props) => {
         addNote,
         deleteNote,
         editNote,
+        getNotes,
       }}
     >
       {props.children}
