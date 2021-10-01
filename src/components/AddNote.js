@@ -2,29 +2,34 @@ import React, { useState, useContext } from "react";
 import NoteContext from "../context/NoteContext";
 
 export const AddNote = () => {
-  const context = useContext(NoteContext);
-  const {addNote } = context;
+  const context = useContext(NoteContext); //using the NoteContext, to avail all the available properties
+  const { addNote } = context; //states and functions of the NoteState
 
+  //make a new state for a note with default values
   const [note, setNote] = useState({
     title: "",
     description: "",
     tag: "general",
   });
 
+  //this function is called whenever there is change in the input field of the AddNote form
   const onChange = (e) => {
-    //here we are using dpread operator,which will push whatever details are present already
+    //here we are using spread operator,which will push whatever details are present already
     //in the note , and also update the field that we are updating i.e "e.target.name"
 
+    //this keeps on updating the state of the note with the user input
     setNote({ ...note, [e.target.name]: e.target.value });
   };
 
+  //this function is called when the Add button is clicked
   const handleClick = (e) => {
-    e.preventDefault();
-    addNote(note);
+    e.preventDefault(); //this prevents the form from getting submitted
+    addNote(note); //calls the addNote function of NoteState and pass the note details inputted by the user
   };
 
   return (
     <div className="my-4">
+      <h2 className="my-3">Add Note</h2>
       <form>
         <div className="mb-3">
           <label htmlFor="title" className="form-label">

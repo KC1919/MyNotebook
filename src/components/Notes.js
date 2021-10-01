@@ -2,53 +2,60 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import NoteContext from "../context/NoteContext";
 import NoteItem from "./NoteItem";
 
-
 export default function Notes() {
-  const context = useContext(NoteContext);
+  const context = useContext(NoteContext); //using the NoteState context and all of its properties and functions and states
   const { notes, getNotes, editNote } = context;
 
   const ref = useRef(null);
   const refClose = useRef(null);
 
   const [note, setNoteState] = useState({
-    id:"",
+    id: "",
     etitle: "",
     edescription: "",
     etag: "",
   });
 
+  //this function is run when the edit note icon is clicked
   const updateNote = async (currentNote) => {
     console.log(currentNote);
 
+    //this clicks the button which renders the modal to edit the note
     ref.current.click();
 
+    //this sets the fields of the modal with note details
     setNoteState({
-      id:currentNote._id,
+      id: currentNote._id,
       etitle: currentNote.title,
       edescription: currentNote.description,
       etag: currentNote.tag,
     });
   };
 
+  //THIS IS RUN WHEN CHANGES ARE BEING MADE IN THE INPUT FIELDS OF THE MODAL
   const handleChange = (e) => {
+    //sets the note with the udpdated input values
     setNoteState({ ...note, [e.target.name]: e.target.value });
   };
 
+  //this function is run when the Update button is clicked
   const handleClick = async (e) => {
-
-
+    //it creates anote with the updated input fields value
     const updatedNote = {
-      id:note.id,         //note id to be updated
+      id: note.id, //note id to be updated
       title: note.etitle,
       description: note.edescription,
       tag: note.etag,
     };
-    editNote(updatedNote);
-    refClose.current.click();
+
+    //calls the editNote function of the NoteState and pass the note as the parameter,
+    editNote(updatedNote); //this function updates the note both at backend and the frontend
+    refClose.current.click(); //this clicks the button which closes the modal
   };
 
+  //ComponentDidMount, this runs as soon as the component is mounted,
   useEffect(() => {
-    getNotes();
+    getNotes(); //this function fetches all the notes from the databse and displays on the client side
   });
 
   return (
@@ -152,7 +159,9 @@ export default function Notes() {
 
       <div className="row">
         {notes.map((note) => {
+          //loop running through all the notes
           return (
+            //rendering each note
             <NoteItem key={note._id} updateNote={updateNote} note={note} />
           );
         })}

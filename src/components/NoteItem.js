@@ -5,7 +5,7 @@ export default function NoteItem(props) {
   const { note, updateNote } = props;
 
   const context = useContext(NoteContext);
-  const { deleteNote} = context;
+  const { deleteNote} = context; 
 
   return (
     <div className="col-md-3">

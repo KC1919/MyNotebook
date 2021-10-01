@@ -4,8 +4,8 @@ function Home() {
 
   return (
     <>
-      <AddNote/>
-      <h1>Your Notes</h1>
+      <AddNote/>  
+      <h1>Your Notes</h1> 
       <Notes/>
     </>
   );
