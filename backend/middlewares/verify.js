@@ -1,12 +1,13 @@
 const jwt = require("jsonwebtoken");
 
 async function verify(req, res, next) {
-  const token = await req.cookies['secret']; //getting the token from the cookie
-
+  const token = await req.headers["auth-token"]; //getting the token from the cookie
+  // console.log(token);
   if (token) //checking if the token is received
   {
     try {
-      const result = await jwt.verify(token, process.env.JWT_KEY); //verifying the token ,by using the secret key and returns the payload if verified
+      const result = jwt.verify(token, process.env.JWT_KEY); //verifying the token ,by using the secret key and returns the payload if verified
+      // console.log(result);
       req.userId = result.userId; //setting the "userId in request header" got from the "payload"
       // res.status(200).json({
       //   message: "User authorized"

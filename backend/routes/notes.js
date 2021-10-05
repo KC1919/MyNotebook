@@ -1,5 +1,6 @@
 const express = require("express");
 const Note = require("../models/Note");
+const User =require("../models/User");
 const verify = require("../middlewares/verify");
 const {
     body,
@@ -18,7 +19,7 @@ notesRouter.post("/addNote", [
     body("description", "description should be minimum of length 5").isLength({
         min: 5,
     }),
-], async (req, res) => {
+],verify, async (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -32,7 +33,7 @@ notesRouter.post("/addNote", [
             description,
             tag
         } = req.body;
-
+        console.log(req.userId);
         //creating the note
         const note = await Note.create({
             user: req.userId,
@@ -58,11 +59,11 @@ notesRouter.post("/addNote", [
 
 
 //Route 2: To fetch all the notes of a logged in user
-notesRouter.get("/fetchNotes", async (req, res) => {
+notesRouter.get("/fetchNotes",verify, async (req, res) => {
     try {
         //findding the note with the user id in the database
         const result = await Note.find({
-            // user: "61480f605932661f7b47c3ba"
+            user: req.userId
         });
 
         // console.log(result);
@@ -89,7 +90,7 @@ notesRouter.get("/fetchNotes", async (req, res) => {
 
 
 //Route 3: To update a note
-notesRouter.put("/update/:id", async (req, res) => {
+notesRouter.put("/update/:id",verify, async (req, res) => {
 
     try {
         //extracting the note details to be updated
@@ -149,7 +150,7 @@ notesRouter.put("/update/:id", async (req, res) => {
 });
 
 //Route 4: To delete a note
-notesRouter.delete("/delete/:id", async (req, res) => {
+notesRouter.delete("/delete/:id",verify, async (req, res) => {
     try {
         const id = req.params.id; //extracting the note id to be deleted
 
@@ -163,15 +164,15 @@ notesRouter.delete("/delete/:id", async (req, res) => {
         }
         //if the note is found
         else {
-            //verify the user trying to deleted is the actural owner of the note
-            // if (note.user.toString() === req.userId) { //if verified
+            //verify the user trying to deleted is the actual owner of the note
+            if (note.user.toString() === req.userId) { //if verified
                 const deleted = await Note.findByIdAndDelete(id); //deleting the note by the  id
                 return res.status(200).json({
                     message: "Note deleted successfully"
                 });
-            // }else{
+            }else{
                 return res.status(401).json({message:"Unauthorized access"});
-            // }
+            }
         }
     } catch (error) {
         res.status(500).json({

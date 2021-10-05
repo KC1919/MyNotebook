@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
+import { useHistory } from "react-router";
 import NoteContext from "../context/NoteContext";
 import NoteItem from "./NoteItem";
 
 export default function Notes(props) {
 
+  let history=useHistory();
   const context = useContext(NoteContext); //using the NoteState context and all of its properties and functions and states
   const { notes, getNotes, editNote } = context;
 
@@ -52,14 +54,19 @@ export default function Notes(props) {
     //calls the editNote function of the NoteState and pass the note as the parameter,
     await editNote(updatedNote); //this function updates the note both at backend and the frontend
     setNoteState(note);
-    props.showAlert("Note Updated Successfully!","success");
     refClose.current.click(); //this clicks the button which closes the modal
+    props.showAlert("Note Updated Successfully!","success");
   };
 
   //ComponentDidMount, this runs as soon as the component is mounted,
   useEffect(() => {
-    getNotes(); //this function fetches all the notes from the databse and displays on the client side
-  });
+    if(localStorage.getItem("authToken")){
+      getNotes(); //this function fetches all the notes from the databse and displays on the client side
+    }else{
+      history.push("/login")
+    }
+    //eslint-disable-next-line
+  },[]);
 
   return (
     <>

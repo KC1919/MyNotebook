@@ -29,7 +29,7 @@ const NoteState = (props) => {
 
     //make a new note
     const newNote = {
-      user: "61480f605932661f7b47c3ba",
+      user:"",
       title: title,
       description: description,
       tag: tag,
@@ -43,6 +43,7 @@ const NoteState = (props) => {
         body: JSON.stringify(newNote),
         headers: {
           "Content-Type": "application/json",
+          "auth-token":localStorage.getItem("authToken")
         },
       });
 
@@ -68,6 +69,7 @@ const NoteState = (props) => {
         mode: "cors",
         headers: {
           "Content-Type": "application/json",
+          "auth-token":localStorage.getItem("authToken")
         },
       });
 
@@ -93,6 +95,7 @@ const NoteState = (props) => {
         mode: "cors",
         headers: {
           "Content-Type": "application/json",
+          "auth-token":localStorage.getItem("authToken")
         },
       });
       const json = await response.json();
@@ -118,6 +121,7 @@ const NoteState = (props) => {
         body: JSON.stringify(note),
         headers: {
           "Content-Type": "application/json",
+          "auth-token":localStorage.getItem("authToken")
         },
       });
       //once the note is updated, we get the response

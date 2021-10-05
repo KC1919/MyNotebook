@@ -62,6 +62,7 @@ const Signup = (props) => {
   };
   return (
     <div className="container">
+    <h2 className="my-3">Signup to start using MyNotebook</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="name" className="form-label">
