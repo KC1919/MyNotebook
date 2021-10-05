@@ -49,7 +49,8 @@ export default function Notes() {
     };
 
     //calls the editNote function of the NoteState and pass the note as the parameter,
-    editNote(updatedNote); //this function updates the note both at backend and the frontend
+    await editNote(updatedNote); //this function updates the note both at backend and the frontend
+    setNoteState(note);
     refClose.current.click(); //this clicks the button which closes the modal
   };
 
@@ -102,8 +103,8 @@ export default function Notes() {
                     id="etitle"
                     name="etitle"
                     aria-describedby="emailHelp"
-                    value={note.etitle}
                     onChange={handleChange}
+                    value={note.etitle}
                   />
                 </div>
                 <div className="mb-3">
@@ -115,8 +116,8 @@ export default function Notes() {
                     className="form-control"
                     id="edescription"
                     name="edescription"
-                    value={note.edescription}
                     onChange={handleChange}
+                    value={note.edescription}
                   />
                 </div>
 
@@ -158,6 +159,9 @@ export default function Notes() {
       </div>
 
       <div className="row">
+        <div className="container">
+          {notes.length === 0 && "No notes to display!"}
+        </div>
         {notes.map((note) => {
           //loop running through all the notes
           return (

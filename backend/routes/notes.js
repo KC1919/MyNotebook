@@ -15,7 +15,7 @@ notesRouter.post("/addNote", [
     body("title", "title cannot be left blank").isLength({
         min: 5
     }),
-    body("description", "description cannot left be empty").isLength({
+    body("description", "description should be minimum of length 5").isLength({
         min: 5,
     }),
 ], async (req, res) => {
@@ -23,7 +23,7 @@ notesRouter.post("/addNote", [
 
     if (!errors.isEmpty()) {
         console.log(errors.array());
-        // res.status(400).json({message:"Error in input",error:errors.array()});
+        return res.status(400).json({message:"Error in input",error:errors.array()});
     }
     try {
         //destructuring the body, and getting details of the note
@@ -42,7 +42,7 @@ notesRouter.post("/addNote", [
         });
 
         const savedNote = await note.save(); //saving the note in the database
-        res.json(savedNote);
+        return res.json(savedNote);
         // return res.status(200).json({
         //     message: "Note added successfully",
         //     note: note
@@ -117,10 +117,6 @@ notesRouter.put("/update/:id", async (req, res) => {
             if (title) newNote.title = title;
             if (description) newNote.description = description;
             if (tag) newNote.tag = tag;
-
-            console.log(title);
-            console.log(description);
-            console.log(tag);
 
             //verify the user who is trying to update, whether he/she is the actual owner
             // if (note.user.toString() === req.userId) {

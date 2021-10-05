@@ -9,7 +9,7 @@ export const AddNote = () => {
   const [note, setNote] = useState({
     title: "",
     description: "",
-    tag: "general",
+    tag: "",
   });
 
   //this function is called whenever there is change in the input field of the AddNote form
@@ -25,6 +25,11 @@ export const AddNote = () => {
   const handleClick = (e) => {
     e.preventDefault(); //this prevents the form from getting submitted
     addNote(note); //calls the addNote function of NoteState and pass the note details inputted by the user
+    setNote({
+      title: "",
+      description: "",
+      tag: "",
+    });
   };
 
   return (
@@ -42,6 +47,7 @@ export const AddNote = () => {
             name="title"
             aria-describedby="emailHelp"
             onChange={onChange}
+            value={note.title}
           />
         </div>
         <div className="mb-3">
@@ -54,6 +60,7 @@ export const AddNote = () => {
             id="description"
             name="description"
             onChange={onChange}
+            value={note.description}
           />
         </div>
 
@@ -68,9 +75,10 @@ export const AddNote = () => {
             name="tag"
             aria-describedby="emailHelp"
             onChange={onChange}
+            value={note.tag}
           />
         </div>
-        <button onClick={handleClick} type="submit" className="btn btn-primary">
+        <button disabled={note.title.length<5 || note.description.length<5} onClick={handleClick} type="submit" className="btn btn-primary">
           Submit
         </button>
       </form>
