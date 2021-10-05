@@ -18,6 +18,7 @@ export default function NoteItem(props) {
               className="far fa-trash-alt mx-2"
               onClick={(e) => {
                 deleteNote(note._id);
+                props.showAlert("Note deleted Successfully!","success");
               }}
             ></i>
             <i className="far fa-edit mx-2" onClick={(e)=>{

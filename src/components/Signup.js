@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-const Signup = () => {
+const Signup = (props) => {
   const history = useHistory();
 
   const [regInfo, setRegInfo] = useState({
@@ -45,6 +45,7 @@ const Signup = () => {
 
         //if the response is postive, means the user authenticated successfully, the api would return a authentication token in response
         if (json.success) {
+          props.showAlert("Registered Successfully!","success");
           setRegInfo({name:"",email:"",password:"",cpassword:""});
           console.log(json);
           //we save the authentication token in the browser local storage
@@ -52,7 +53,7 @@ const Signup = () => {
           history.push("/"); //and route the user to the "Home page"
         }
         else{
-            alert("Email is taken! Internal server error");
+          props.showAlert("Registered failed! This email is already registered","danger");
         }
       }
     } catch (error) {

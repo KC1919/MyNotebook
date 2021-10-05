@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-const Login = () => {
+const Login = (props) => {
   const history = useHistory();
 
   const [loginInfo, setLoginInfo] = useState({
@@ -36,15 +36,17 @@ const Login = () => {
 
       //if the response is postive, means the user authenticated successfully, the api would return a authentication token in response
       if (json.success) {
-
         setLoginInfo({email:"",password:""});
-        alert("logged in successfully!")
+        props.showAlert("Logged in Successfully!","success");
         //we save the authentication token in the browser local storage
         localStorage.setItem("authToken", json.authToken);
         history.push("/"); //and route the user to the "Home page"
+      }else{
+        props.showAlert("Invalid Credentials","danger");
       }
     } catch (error) {
       console.log(error.message);
+      props.showAlert("Invalid Credentials","danger");
     }
   };
   return (

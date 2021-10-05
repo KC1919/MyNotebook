@@ -123,7 +123,7 @@ authRouter.post(
 
         //else if the user is present in the database with the inputted email, we check the password
         const result = await bcrypt.compare(req.body.password, user.password);
-        if (result !== null) {
+        if (result !== false) {
           //if the password is matched
           //then we generate a json-web-token
           success = true;

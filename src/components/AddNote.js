@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import NoteContext from "../context/NoteContext";
 
-export const AddNote = () => {
+export const AddNote = (props) => {
   const context = useContext(NoteContext); //using the NoteContext, to avail all the available properties
   const { addNote } = context; //states and functions of the NoteState
 
@@ -22,9 +22,10 @@ export const AddNote = () => {
   };
 
   //this function is called when the Add button is clicked
-  const handleClick = (e) => {
+  const handleClick = async(e) => {
     e.preventDefault(); //this prevents the form from getting submitted
-    addNote(note); //calls the addNote function of NoteState and pass the note details inputted by the user
+    await addNote(note); //calls the addNote function of NoteState and pass the note details inputted by the user
+    props.showAlert("Note Added Successfully!","success");
     setNote({
       title: "",
       description: "",

@@ -1,12 +1,12 @@
 import { AddNote } from "./AddNote";
 import Notes from "./Notes";
-function Home() {
+function Home(props) {
 
   return (
     <>
-      <AddNote/>  
+      <AddNote showAlert={props.showAlert}/>  
       <h1>Your Notes</h1> 
-      <Notes/>
+      <Notes showAlert={props.showAlert}/>
     </>
   );
 }

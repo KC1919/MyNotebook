@@ -46,11 +46,12 @@ const NoteState = (props) => {
         },
       });
 
-      const json = await response.json();
-      console.log(json);
-
-      //update the state of the notes by appending the newly added note to the notes array
-      addnote(notes.concat(newNote));
+      if(response.status){
+        const json = await response.json();
+        console.log(json);
+        //update the state of the notes by appending the newly added note to the notes array
+        addnote(notes.concat(newNote));
+      }
     } catch (error) {
       console.log(error.message);
     }

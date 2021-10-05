@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import NoteContext from "../context/NoteContext";
 import NoteItem from "./NoteItem";
 
-export default function Notes() {
+export default function Notes(props) {
+
   const context = useContext(NoteContext); //using the NoteState context and all of its properties and functions and states
   const { notes, getNotes, editNote } = context;
 
@@ -51,6 +52,7 @@ export default function Notes() {
     //calls the editNote function of the NoteState and pass the note as the parameter,
     await editNote(updatedNote); //this function updates the note both at backend and the frontend
     setNoteState(note);
+    props.showAlert("Note Updated Successfully!","success");
     refClose.current.click(); //this clicks the button which closes the modal
   };
 
@@ -166,7 +168,7 @@ export default function Notes() {
           //loop running through all the notes
           return (
             //rendering each note
-            <NoteItem key={note._id} updateNote={updateNote} note={note} />
+            <NoteItem key={note._id} updateNote={updateNote} note={note} showAlert={props.showAlert} />
           );
         })}
       </div>
